@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>http video streaming</title>
+
+	<style>
+		body{
+			margin:  40px auto;
+			max-width:  650px;
+			backgorund-color:  grey;
+		}
+	</style>
+	<!-- <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool/disable-devtool.min.js'></script> -->
+</head>
+<body onload="loadVideo();">
+	<video id="videoPlayer" width="650" controls muted="muted" autoplay >
+		<source src="/video" type="video/mp4" />
+	</video>
+	<script>
+
+		
+		function loadVideo(){
+			let xhr = new XMLHttpRequest();
+			xhr.open('GET', './video');
+			xhr.setRequestHeader('Range', 'bytes=100-200');
+			xhr.responseType = 'arraybuffer';
+			
+			xhr.onload = function(e) {
+				let blob  = new Blob([xhr.response]);
+				let url = URL.createObjectURL(blob);
+
+				console.log(url, 'vid');
+
+				let vid = document.getElementById('videoPlayer');
+				let sources = vid.getElementsByTagName('source');
+    			sources[0].src = url;
+			}
+
+			xhr.send();
+
+		}
+
+		// check addblock
+			window.addEventListener("load", function(){
+				async function detectAdBlock() {
+				  let adBlockEnabled = false
+				  const googleAdUrl = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+				  try {
+				    await fetch(new Request(googleAdUrl)).catch(_ => adBlockEnabled = true)
+				  } catch (e) {
+				    adBlockEnabled = true
+				  } finally {
+				    console.log(`AdBlock Enabled: ${adBlockEnabled}`)
+				  }
+				}
+				detectAdBlock()
+			});
+
+		
+
+	</script>
+</body>
+</html>
